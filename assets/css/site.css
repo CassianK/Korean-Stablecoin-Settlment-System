@@ -1,18 +1,93 @@
-:root{ --bg:#f7f7fb; --card:#fff; --fg:#1f2937; --muted:#6b7280; --accent:#6d28d9; }
-.dark{ --bg:#0b1020; --card:#101735; --fg:#e5e7eb; --muted:#9aa3b2; --accent:#a78bfa; }
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 ui-sans-serif,system-ui,AppleSDGothicNeo,"Segoe UI",Roboto}
+/* ====== Theme ====== */
+:root{
+  --bg: #0b0f1a;
+  --bg-soft: #0f1525;
+  --fg: #e9eef7;
+  --muted:#a9b3c7;
+  --card:#10192eaa;              /* glass */
+  --card-border:#6d28d933;       /* accent tint */
+  --card-hover:#162240aa;
+  --accent:#a78bfa;              /* violet */
+  --ring:#a78bfa55;
+  --shadow: 0 10px 30px #00000055;
+}
+:root:not(.dark){
+  --bg:#f6f7fb;
+  --bg-soft:#ffffff;
+  --fg:#111827;
+  --muted:#64748b;
+  --card:#ffffffcc;
+  --card-border:#6d28d91a;
+  --card-hover:#ffffffee;
+  --shadow: 0 10px 28px #241a3a15;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;color:var(--fg);background:var(--bg);font:16px/1.6 ui-sans-serif,system-ui,Apple SD Gothic Neo,Segoe UI,Roboto,Helvetica,Arial}
 a{color:inherit;text-decoration:none}
-.site-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid #0001;background:linear-gradient(180deg,#00000006,#0000)}
-.brand{display:flex;gap:10px;align-items:center;font-weight:700}
-.brand img{width:22px;height:22px}
-.header-actions{display:flex;gap:10px}
-#search{padding:8px 10px;border:1px solid #0002;border-radius:8px;min-width:260px;background:var(--card);color:var(--fg)}
-#modeToggle{padding:8px 10px;border:1px solid #0002;border-radius:8px;background:var(--card);cursor:pointer}
-.wrap{max-width:1200px;margin:30px auto;padding:0 20px}
-h2{margin:26px 0 14px}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid #0002;border-radius:14px;padding:16px;transition:.2s box-shadow,.2s transform}
-.card:hover{box-shadow:0 10px 24px #00000020;transform:translateY(-2px)}
-.card h3{margin:0 0 6px}
-.card p{margin:0;color:var(--muted)}
-.site-footer{border-top:1px solid #0001;margin-top:30px;padding:20px;text-align:center;color:var(--muted)}
+
+/* ====== Background decor (soft gradients) ====== */
+.bg-decor{
+  position:fixed; inset:-20% -10% auto -10%; height:60vh; z-index:-1;
+  background:
+    radial-gradient(40% 55% at 10% 0%, #6d28d966, transparent 60%),
+    radial-gradient(45% 60% at 90% 10%, #22d3ee44, transparent 60%),
+    radial-gradient(60% 65% at 50% 10%, #f472b644, transparent 60%);
+  filter: blur(40px) saturate(120%);
+  opacity:.6;
+}
+
+/* ====== Header ====== */
+.header{
+  max-width:1200px;margin:18px auto 0;padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:saturate(120%) blur(10px);
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px}
+.brand img{width:36px;height:36px;border-radius:10px;object-fit:cover;box-shadow:var(--shadow)}
+.actions{display:flex;align-items:center;gap:10px}
+.mode{
+  border:1px solid var(--card-border);background:var(--card);
+  padding:8px 10px;border-radius:12px;cursor:pointer
+}
+/* Search pill */
+.search{display:flex;align-items:center;gap:8px;background:var(--bg-soft);
+  border:1px solid var(--card-border); padding:8px 12px;border-radius:999px}
+.search input{
+  border:none;outline:none;background:transparent;color:var(--fg);min-width:240px
+}
+
+/* ====== Hero ====== */
+.hero{padding:40px 20px 10px}
+.hero-inner{max-width:1200px;margin:0 auto}
+.hero h1{margin:0 0 6px;font-size:40px;letter-spacing:-0.02em}
+.hero .accent{background:linear-gradient(90deg,#a78bfa,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{margin:0;color:var(--muted)}
+
+/* ====== Main ====== */
+.container{max-width:1200px;margin:24px auto;padding:0 20px}
+h2{margin:26px 0 14px;color:var(--muted);font-weight:800;letter-spacing:.02em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+
+/* Glass cards with border glow */
+.card{
+  background:var(--card); border:1px solid var(--card-border); border-radius:18px;
+  padding:18px; backdrop-filter:saturate(140%) blur(6px);
+  box-shadow: var(--shadow);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+}
+.card:hover{ transform: translateY(-3px); background:var(--card-hover); border-color: var(--ring); box-shadow: 0 14px 36px #00000066; }
+.card-head{font-weight:800;margin:0 0 6px;display:flex;gap:8px;align-items:center}
+.card-body{color:var(--muted);font-size:14.5px}
+
+/* ====== Footer ====== */
+.footer{border-top:1px solid var(--card-border);margin-top:36px;padding:22px 20px;text-align:center;color:var(--muted)}
+.footer a{border-bottom:1px dashed var(--card-border)}
+
+/* ====== Responsive ====== */
+@media (max-width:640px){
+  .brand span{display:none}
+  .hero h1{font-size:30px}
+  .search input{min-width:140px}
+}
