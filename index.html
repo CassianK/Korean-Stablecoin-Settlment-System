@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trinos Research Hub</title>
+  <link rel="icon" href="assets/img/favicon.svg">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <meta name="description" content="Strategy, Compliance, and Token Architecture resources by Trinos Strategy." />
+  <meta property="og:title" content="Trinos Research Hub" />
+  <meta property="og:description" content="Strategy, Compliance, and Token Architecture resources." />
+  <meta property="og:type" content="website" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="assets/img/favicon.svg" alt="" />
+      <span>Trinos Research Hub</span>
+    </div>
+    <div class="header-actions">
+      <input id="search" type="search" placeholder="검색(제목/키워드)…" />
+      <button id="modeToggle" aria-label="Toggle dark mode">🌓</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section>
+      <h2>Strategy</h2>
+      <div class="card-grid">
+        <a class="card" href="pages/business_impact_roi_analysis.html" data-tags="strategy roi business impact">
+          <h3>비즈니스 임팩트 & ROI 분석</h3>
+          <p>시장지표, 수익모델, ROI 프로젝션 요약</p>
+        </a>
+        <a class="card" href="pages/strategic_roadmap.html" data-tags="strategy roadmap execution">
+          <h3>전략적 실행 로드맵</h3>
+          <p>Phase별 목표/성과물/지표 타임라인</p>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Compliance</h2>
+      <div class="card-grid">
+        <a class="card" href="pages/compliance_dashboard.html" data-tags="compliance checklist dashboard">
+          <h3>규제 준수 체크리스트 대시보드</h3>
+          <p>섹터별 준수상태와 진행도</p>
+        </a>
+        <a class="card" href="pages/license_cooperation_model.html" data-tags="license partnership model">
+          <h3>라이선스 요구사항 & 협력 모델</h3>
+          <p>이상적/현실적 모델 비교 및 파트너십 플로우</p>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Token / RWA</h2>
+      <div class="card-grid">
+        <a class="card" href="pages/fixed_token_comparison.html" data-tags="token standards erc20 erc3643 erc7702 x402">
+          <h3>토큰 표준 비교 매트릭스</h3>
+          <p>표준별 기능/컴플라이언스/점수 비교</p>
+        </a>
+        <a class="card" href="pages/token_evolution_timeline.html" data-tags="token timeline evolution">
+          <h3>토큰 표준 진화 타임라인</h3>
+          <p>ERC20 → 3643 → 7702 → x402</p>
+        </a>
+        <a class="card" href="pages/x402_vs_korean_model.html" data-tags="x402 korea model comparison">
+          <h3>x402 vs 한국형 모델 심층 비교</h3>
+          <p>설계철학/거버넌스/시사점</p>
+        </a>
+        <a class="card" href="pages/fixed_stablecoin_architecture.html" data-tags="stablecoin architecture payment">
+          <h3>한국형 스테이블코인 결제 시스템</h3>
+          <p>주요 행위자/정산/블록체인 플로우</p>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Infra / Partner</h2>
+      <div class="card-grid">
+        <a class="card" href="pages/dsrv_solution_positioning.html" data-tags="dsrv custody payments positioning">
+          <h3>DSRV 솔루션 포지셔닝</h3>
+          <p>결제/커스터디 포지셔닝 & 인티그레이션</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© Trinos Strategy. Contact: <a href="mailto:dk@trinos.group">dk@trinos.group</a></p>
+  </footer>
+
+  <script>
+    // 다크모드 토글
+    const btn = document.getElementById('modeToggle');
+    const prefer = localStorage.getItem('mode');
+    if (prefer === 'dark') document.documentElement.classList.add('dark');
+    btn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('mode',
+        document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // 초간단 검색(카드 data-tags 대상)
+    const q = document.getElementById('search');
+    const cards = [...document.querySelectorAll('.card')];
+    q.addEventListener('input', () => {
+      const kw = q.value.trim().toLowerCase();
+      cards.forEach(c => {
+        const hit = c.textContent.toLowerCase().includes(kw) ||
+                    (c.dataset.tags||'').toLowerCase().includes(kw);
+        c.style.display = hit ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
