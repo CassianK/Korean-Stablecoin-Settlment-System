@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>x402 vs 한국형 모델 심층 비교</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .comparison-container {
+            padding: 40px;
+        }
+        
+        .models-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .model-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 4px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .model-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .x402-model { 
+            border-color: #74b9ff;
+            background: linear-gradient(135deg, #f8fafe, #e3f2fd);
+        }
+        
+        .korean-model { 
+            border-color: #fd79a8;
+            background: linear-gradient(135deg, #fef7f5, #fce4ec);
+        }
+        
+        .model-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid;
+        }
+        
+        .x402-model .model-header { border-color: #74b9ff; }
+        .korean-model .model-header { border-color: #fd79a8; }
+        
+        .model-icon {
+            font-size: 3.5rem;
+            margin-right: 20px;
+        }
+        
+        .model-info {
+            flex: 1;
+        }
+        
+        .model-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+        
+        .model-subtitle {
+            font-size: 1.1rem;
+            color: #636e72;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .model-creator {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+        
+        .x402-model .model-creator {
+            background: #74b9ff;
+            color: white;
+        }
+        
+        .korean-model .model-creator {
+            background: #fd79a8;
+            color: white;
+        }
+        
+        .model-features {
+            margin-bottom: 25px;
+        }
+        
+        .features-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features-title::before {
+            content: "⚡";
+            margin-right: 8px;
+        }
+        
+        .features-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .feature-icon {
+            font-size: 1.1rem;
+            margin-right: 12px;
+            width: 25px;
+            text-align: center;
+        }
+        
+        .feature-text {
+            font-size: 0.95rem;
+            color: #2d3436;
+            line-height: 1.4;
+        }
+        
+        .detailed-comparison {
+            margin-top: 50px;
+        }
+        
+        .comparison-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 40px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            background: white;
+            margin-bottom: 40px;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            color: white;
+        }
+        
+        .table-header th {
+            padding: 25px 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .table-header th:last-child {
+            border-right: none;
+        }
+        
+        .category-row {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+        
+        .category-row td {
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .comparison-row {
+            transition: all 0.3s ease;
+        }
+        
+        .comparison-row:hover {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            transform: translateX(5px);
+        }
+        
+        .comparison-row td {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+        
+        .aspect-name {
+            font-weight: 600;
+            color: #2d3436;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-right: 4px solid #74b9ff;
+        }
+        
+        .x402-cell {
+            background: linear-gradient(135deg, #f8fafe, #e3f2fd);
+            border-left: 3px solid #74b9ff;
+        }
+        
+        .korean-cell {
+            background: linear-gradient(135deg, #fef7f5, #fce4ec);
+            border-left: 3px solid #fd79a8;
+        }
+        
+        .implication-cell {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 3px solid #fdcb6e;
+        }
+        
+        .feature-highlight {
+            font-weight: 600;
+            color: #2d3436;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        
+        .feature-detail {
+            font-size: 0.9rem;
+            color: #636e72;
+            line-height: 1.5;
+        }
+        
+        .advantage-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 2px;
+        }
+        
+        .tag-excellent { background: #d4edda; color: #155724; }
+        .tag-good { background: #d1ecf1; color: #0c5460; }
+        .tag-limited { background: #fff3cd; color: #856404; }
+        .tag-poor { background: #f8d7da; color: #721c24; }
+        
+        .key-insights {
+            margin-top: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 20px;
+            border-left: 5px solid #00b894;
+        }
+        
+        .insights-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #155724;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .insight-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .insight-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .insight-1 { border-color: #74b9ff; }
+        .insight-2 { border-color: #fd79a8; }
+        .insight-3 { border-color: #fdcb6e; }
+        
+        .insight-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .insight-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+        
+        .insight-description {
+            font-size: 0.95rem;
+            color: #636e72;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 1200px) {
+            .models-overview {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .comparison-container {
+                padding: 20px;
+            }
+            
+            .model-card {
+                padding: 25px;
+            }
+            
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+            
+            .table-header th,
+            .comparison-row td {
+                padding: 15px 10px;
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>⚖️ x402 vs 한국형 모델 심층 비교</h1>
+                <p>글로벌 표준과 한국 특화 솔루션의 전략적 차이점 분석</p>
+            </div>
+        </div>
+        
+        <div class="comparison-container">
+            <div class="models-overview">
+                <div class="model-card x402-model">
+                    <div class="model-header">
+                        <div class="model-icon">🌐</div>
+                        <div class="model-info">
+                            <div class="model-title">x402 표준</div>
+                            <div class="model-subtitle">글로벌 웹 결제 프로토콜</div>
+                            <div class="model-creator">Coinbase 주도</div>
+                        </div>
+                    </div>
+                    
+                    <div class="model-features">
+                        <div class="features-title">핵심 특징</div>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <div class="feature-icon">🔑</div>
+                                <div class="feature-text">사용자 개인키 직접 관리</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">🤖</div>
+                                <div class="feature-text">M2M 초소액 결제에 최적화</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">🌍</div>
+                                <div class="feature-text">HTTP 402 상태코드 활용</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">⚡</div>
+                                <div class="feature-text">단일 HTTP 왕복으로 결제</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">🏢</div>
+                                <div class="feature-text">Facilitator 중심 아키텍처</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-features">
+                        <div class="features-title">장단점</div>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <div class="feature-icon">✅</div>
+                                <div class="feature-text">개방형 표준으로 글로벌 확장성</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">✅</div>
+                                <div class="feature-text">AI/IoT 기기 간 자동 결제</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">⚠️</div>
+                                <div class="feature-text">개인키 분실 리스크</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">⚠️</div>
+                                <div class="feature-text">대중화에는 복잡한 UX</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="model-card korean-model">
+                    <div class="model-header">
+                        <div class="model-icon">🇰🇷</div>
+                        <div class="model-info">
+                            <div class="model-title">한국형 모델</div>
+                            <div class="model-subtitle">규제 최적화 결제 시스템</div>
+                            <div class="model-creator">DSRV 제안</div>
+                        </div>
+                    </div>
+                    
+                    <div class="model-features">
+                        <div class="features-title">핵심 특징</div>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <div class="feature-icon">🏦</div>
+                                <div class="feature-text">중앙화된 키 관리 (VASP)</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">💳</div>
+                                <div class="feature-text">선불 충전 기반 모델</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">📱</div>
+                                <div class="feature-text">기존 간편결제와 동일한 UX</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">🤝</div>
+                                <div class="feature-text">PG-VASP 역할 분리</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">🏛️</div>
+                                <div class="feature-text">한국 규제 완전 준수</div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-features">
+                        <div class="features-title">장단점</div>
+                        <ul class="features-list">
+                            <li class="feature-item">
+                                <div class="feature-icon">✅</div>
+                                <div class="feature-text">대중화에 최적화된 UX</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">✅</div>
+                                <div class="feature-text">완전한 규제 준수</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">⚠️</div>
+                                <div class="feature-text">중앙화로 인한 의존성</div>
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">⚠️</div>
+                                <div class="feature-text">복잡한 파트너십 구조</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detailed-comparison">
+                <div class="comparison-title">📊 세부 비교 분석</div>
+                <table class="comparison-table">
+                    <thead class="table-header">
+                        <tr>
+                            <th style="width: 20%;">비교 항목</th>
+                            <th style="width: 25%;">x402 모델</th>
+                            <th style="width: 25%;">한국형 모델</th>
+                            <th style="width: 30%;">시사점</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="category-row">
+                            <td colspan="4">🔑 개인키 및 보안 관리</td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">키 관리 주체</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">클라이언트 (사용자)</div>
+                                <div class="feature-detail">KMS 또는 개인 지갑을 통한 직접 관리</div>
+                                <div class="advantage-tag tag-limited">복잡함</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">퍼실리테이터 / VASP</div>
+                                <div class="feature-detail">중앙화된 전문 기관 관리</div>
+                                <div class="advantage-tag tag-excellent">안전함</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>대중화 관점:</strong> 한국형 모델이 키 분실 리스크를 제거하여 일반 사용자에게 절대적으로 유리
+                            </td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">보안 수준</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">개인 책임</div>
+                                <div class="feature-detail">시드 구문 분실 시 자산 영구 손실</div>
+                                <div class="advantage-tag tag-poor">고위험</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">기관급 보안</div>
+                                <div class="feature-detail">다중서명, HSM, 분리보관</div>
+                                <div class="advantage-tag tag-excellent">최고</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>리스크 관리:</strong> 전문 기관의 보안 시스템이 개인 관리보다 훨씬 안전하고 규제 친화적
+                            </td>
+                        </tr>
+                        
+                        <tr class="category-row">
+                            <td colspan="4">👥 사용자 경험 (UX)</td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">사용 편의성</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">암호화폐 지갑 필수</div>
+                                <div class="feature-detail">KMS 사용 또는 개인키 서명 필요</div>
+                                <div class="advantage-tag tag-poor">복잡함</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">간편결제와 동일</div>
+                                <div class="feature-detail">PIN, 생체인증만으로 완료</div>
+                                <div class="advantage-tag tag-excellent">직관적</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>진입장벽:</strong> 카카오페이/토스 수준의 UX를 통해 일반 사용자의 진입 장벽 완전 제거
+                            </td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">온보딩 과정</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">지갑 설치 및 설정</div>
+                                <div class="feature-detail">시드 구문 백업, 테스트 거래 등</div>
+                                <div class="advantage-tag tag-limited">다단계</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">기존 앱 업데이트</div>
+                                <div class="feature-detail">추가 설치나 학습 불필요</div>
+                                <div class="advantage-tag tag-excellent">원클릭</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>확산속도:</strong> 기존 사용자 베이스를 활용한 빠른 시장 확산 가능
+                            </td>
+                        </tr>
+                        
+                        <tr class="category-row">
+                            <td colspan="4">🏛️ 규제 준수</td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">핵심 규제</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">퍼실리테이터 VASP 역할</div>
+                                <div class="feature-detail">규제 영역이 모호함</div>
+                                <div class="advantage-tag tag-limited">불분명</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">PG(전금법) - VASP(특금법)</div>
+                                <div class="feature-detail">명확한 역할 분리</div>
+                                <div class="advantage-tag tag-excellent">완전준수</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>법적 안정성:</strong> 각 법률에 최적화된 전문기업 협력으로 규제 리스크 최소화
+                            </td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">KYC/AML 처리</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">불특정 다수 거래</div>
+                                <div class="feature-detail">개별 클라이언트 신원확인 어려움</div>
+                                <div class="advantage-tag tag-poor">제한적</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">완전 신원확인</div>
+                                <div class="feature-detail">VASP 레벨에서 모든 거래 추적</div>
+                                <div class="advantage-tag tag-excellent">완벽</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>컴플라이언스:</strong> 특금법상 모든 의무를 기술적으로 완전 자동화 가능
+                            </td>
+                        </tr>
+                        
+                        <tr class="category-row">
+                            <td colspan="4">🏢 주요 참여자</td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">시스템 구조</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">3자 구조</div>
+                                <div class="feature-detail">클라이언트, 서버, 퍼실리테이터</div>
+                                <div class="advantage-tag tag-good">단순함</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">4자 구조</div>
+                                <div class="feature-detail">클라이언트, 서버, 퍼실리테이터(PG), VASP</div>
+                                <div class="advantage-tag tag-limited">복잡함</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>전문성:</strong> 복잡성 증가하지만 각 영역별 전문성과 책임 분담으로 전체 품질 향상
+                            </td>
+                        </tr>
+                        <tr class="comparison-row">
+                            <td class="aspect-name">기술 종속성</td>
+                            <td class="x402-cell">
+                                <div class="feature-highlight">Coinbase 생태계</div>
+                                <div class="feature-detail">Base 네트워크, CDP 플랫폼</div>
+                                <div class="advantage-tag tag-poor">종속성 높음</div>
+                            </td>
+                            <td class="korean-cell">
+                                <div class="feature-highlight">한국 자체 생태계</div>
+                                <div class="feature-detail">국내 파트너사들과의 협력</div>
+                                <div class="advantage-tag tag-excellent">독립성</div>
+                            </td>
+                            <td class="implication-cell">
+                                <strong>전략적 자율성:</strong> 국가 차원의 금융 인프라로서 해외 의존도 최소화
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="key-insights">
+                <div class="insights-title">💡 핵심 전략적 인사이트</div>
+                <div class="insights-grid">
+                    <div class="insight-item insight-1">
+                        <div class="insight-icon">🎯</div>
+                        <div class="insight-title">타겟 시장의 차이</div>
+                        <div class="insight-description">
+                            x402는 AI/IoT 등 M2M 결제에 최적화된 반면, 
+                            한국형 모델은 일반 소비자의 대중적 결제 서비스에 최적화. 
+                            각각의 목표 시장이 다르므로 상호 보완적 관계로 발전 가능.
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item insight-2">
+                        <div class="insight-icon">⚖️</div>
+                        <div class="insight-title">규제 접근법의 차이</div>
+                        <div class="insight-description">
+                            x402는 글로벌 표준을 추구하지만 각국 규제 대응이 모호한 반면, 
+                            한국형 모델은 국내 규제에 완벽히 최적화하여 법적 안정성 확보. 
+                            규제 선제 대응이 시장 성공의 핵심 요인.
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item insight-3">
+                        <div class="insight-icon">🚀</div>
+                        <div class="insight-title">실행 전략의 차이</div>
+                        <div class="insight-description">
+                            x402는 기술 표준 중심의 bottom-up 접근인 반면, 
+                            한국형 모델은 기존 금융 생태계와의 파트너십을 통한 top-down 접근. 
+                            한국 시장 특성상 후자가 더 현실적이고 효과적.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

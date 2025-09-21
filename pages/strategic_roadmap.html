@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전략적 실행 로드맵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+            animation: wave 4s infinite linear;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+        
+        .roadmap-container {
+            padding: 40px;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: linear-gradient(to bottom, #74b9ff, #0984e3);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+        
+        .phase {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            margin-bottom: 50px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 3px solid;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .phase:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .phase-1 { border-color: #74b9ff; }
+        .phase-2 { border-color: #fd79a8; }
+        .phase-3 { border-color: #fdcb6e; }
+        .phase-4 { border-color: #00b894; }
+        .phase-5 { border-color: #a29bfe; }
+        
+        .phase::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid;
+            z-index: 2;
+        }
+        
+        .phase-1::before { 
+            left: -12.5px; 
+            border-color: #74b9ff;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+        }
+        .phase-2::before { 
+            right: -12.5px; 
+            border-color: #fd79a8;
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+        }
+        .phase-3::before { 
+            left: -12.5px; 
+            border-color: #fdcb6e;
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+        }
+        .phase-4::before { 
+            right: -12.5px; 
+            border-color: #00b894;
+            background: linear-gradient(135deg, #00b894, #00a085);
+        }
+        .phase-5::before { 
+            left: -12.5px; 
+            border-color: #a29bfe;
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+        }
+        
+        .left {
+            width: 48%;
+            left: 0;
+        }
+        
+        .right {
+            width: 48%;
+            right: 0;
+        }
+        
+        .phase-header {
+            padding: 25px 35px;
+            border-bottom: 3px solid;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .phase-1 .phase-header { 
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-color: #74b9ff;
+        }
+        .phase-2 .phase-header { 
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            border-color: #fd79a8;
+        }
+        .phase-3 .phase-header { 
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-color: #fdcb6e;
+        }
+        .phase-4 .phase-header { 
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-color: #00b894;
+        }
+        .phase-5 .phase-header { 
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            border-color: #a29bfe;
+        }
+        
+        .phase-info {
+            flex: 1;
+        }
+        
+        .phase-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+        
+        .phase-duration {
+            font-size: 1rem;
+            color: #636e72;
+            font-weight: 500;
+        }
+        
+        .phase-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .status-ready { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+        .status-planning { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .status-development { background: linear-gradient(135deg, #fdcb6e, #e17055); }
+        .status-scaling { background: linear-gradient(135deg, #00b894, #00a085); }
+        .status-expansion { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+        
+        .phase-content {
+            padding: 35px;
+        }
+        
+        .objectives {
+            margin-bottom: 30px;
+        }
+        
+        .objectives-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .objectives-title::before {
+            content: "🎯";
+            margin-right: 8px;
+        }
+        
+        .objectives-list {
+            list-style: none;
+        }
+        
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .objective-item:hover {
+            transform: translateX(5px);
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+        
+        .phase-1 .objective-item { border-color: #74b9ff; }
+        .phase-2 .objective-item { border-color: #fd79a8; }
+        .phase-3 .objective-item { border-color: #fdcb6e; }
+        .phase-4 .objective-item { border-color: #00b894; }
+        .phase-5 .objective-item { border-color: #a29bfe; }
+        
+        .objective-icon {
+            font-size: 1.2rem;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+        
+        .objective-text {
+            font-size: 0.95rem;
+            color: #2d3436;
+            line-height: 1.5;
+        }
+        
+        .deliverables {
+            margin-bottom: 30px;
+        }
+        
+        .deliverables-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .deliverables-title::before {
+            content: "📦";
+            margin-right: 8px;
+        }
+        
+        .deliverables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .deliverable-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .deliverable-item:hover {
+            transform: scale(1.03);
+        }
+        
+        .phase-1 .deliverable-item { border-color: #74b9ff; }
+        .phase-2 .deliverable-item { border-color: #fd79a8; }
+        .phase-3 .deliverable-item { border-color: #fdcb6e; }
+        .phase-4 .deliverable-item { border-color: #00b894; }
+        .phase-5 .deliverable-item { border-color: #a29bfe; }
+        
+        .deliverable-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2d3436;
+        }
+        
+        .kpis {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #fdcb6e;
+        }
+        
+        .kpis-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .kpis-title::before {
+            content: "📊";
+            margin-right: 8px;
+        }
+        
+        .kpis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .kpi-item {
+            text-align: center;
+        }
+        
+        .kpi-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .kpi-label {
+            font-size: 0.8rem;
+            color: #636e72;
+            margin-top: 5px;
+        }
+        
+        .success-metrics {
+            margin-top: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 20px;
+            border: 3px solid #00b894;
+        }
+        
+        .metrics-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #155724;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 3px solid #00b894;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00b894;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            font-size: 1.1rem;
+            color: #2d3436;
+            font-weight: 600;
+        }
+        
+        .critical-path {
+            margin-top: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 20px;
+            border: 3px solid #e74c3c;
+        }
+        
+        .critical-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #c62828;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .critical-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .critical-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .critical-item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #c62828;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .critical-item-title::before {
+            content: "⚠️";
+            margin-right: 8px;
+        }
+        
+        .critical-description {
+            font-size: 0.9rem;
+            color: #2d3436;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .roadmap-container {
+                padding: 20px;
+            }
+            
+            .timeline::after {
+                left: 20px;
+            }
+            
+            .phase {
+                width: 100% !important;
+                left: 40px !important;
+                right: auto !important;
+            }
+            
+            .phase::before {
+                left: -32px !important;
+                right: auto !important;
+            }
+            
+            .phase-content {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🗺️ 전략적 실행 로드맵</h1>
+                <p>DSRV 스테이블코인 생태계 구축을 위한 5단계 전략</p>
+            </div>
+        </div>
+        
+        <div class="roadmap-container">
+            <div class="timeline">
+                <!-- Phase 1: Foundation -->
+                <div class="phase phase-1 left">
+                    <div class="phase-header">
+                        <div class="phase-info">
+                            <div class="phase-title">Phase 1: Foundation</div>
+                            <div class="phase-duration">2025년 Q4 (3개월)</div>
+                        </div>
+                        <div class="phase-status status-ready">착수 준비</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="objectives">
+                            <div class="objectives-title">핵심 목표</div>
+                            <ul class="objectives-list">
+                                <li class="objective-item">
+                                    <div class="objective-icon">🏗️</div>
+                                    <div class="objective-text">기술 인프라 구축 및 MVP 개발</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🤝</div>
+                                    <div class="objective-text">핵심 파트너사(PG) 1-2곳과 MOU 체결</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🏛️</div>
+                                    <div class="objective-text">규제 당국과 사전 협의 완료</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">👥</div>
+                                    <div class="objective-text">핵심 개발팀 구성 (20명)</div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="deliverables">
+                            <div class="deliverables-title">주요 산출물</div>
+                            <div class="deliverables-grid">
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">DSRV Custody v1.0</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">Payments SDK</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">규제 준수 프레임워크</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">파트너십 계약서</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpis">
+                            <div class="kpis-title">성과 지표 (KPI)</div>
+                            <div class="kpis-grid">
+                                <div class="kpi-item">
+                                    <div class="kpi-value">1,000+</div>
+                                    <div class="kpi-label">TPS 처리능력</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">2개</div>
+                                    <div class="kpi-label">파트너사 확보</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">95%</div>
+                                    <div class="kpi-label">규제 준수율</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 2: Pilot Launch -->
+                <div class="phase phase-2 right">
+                    <div class="phase-header">
+                        <div class="phase-info">
+                            <div class="phase-title">Phase 2: Pilot Launch</div>
+                            <div class="phase-duration">2026년 Q1-Q2 (6개월)</div>
+                        </div>
+                        <div class="phase-status status-planning">계획 단계</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="objectives">
+                            <div class="objectives-title">핵심 목표</div>
+                            <ul class="objectives-list">
+                                <li class="objective-item">
+                                    <div class="objective-icon">🚀</div>
+                                    <div class="objective-text">선별된 파트너와 제한적 서비스 런칭</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">👥</div>
+                                    <div class="objective-text">1만명 규모 베타 사용자 확보</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🔧</div>
+                                    <div class="objective-text">실제 환경에서 시스템 안정성 검증</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">📊</div>
+                                    <div class="objective-text">사용자 피드백 기반 시스템 개선</div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="deliverables">
+                            <div class="deliverables-title">주요 산출물</div>
+                            <div class="deliverables-grid">
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">베타 서비스 앱</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">모니터링 대시보드</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">운영 매뉴얼</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">성과 분석 보고서</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpis">
+                            <div class="kpis-title">성과 지표 (KPI)</div>
+                            <div class="kpis-grid">
+                                <div class="kpi-item">
+                                    <div class="kpi-value">10K</div>
+                                    <div class="kpi-label">베타 사용자</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">99.9%</div>
+                                    <div class="kpi-label">시스템 가용성</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">4.5+</div>
+                                    <div class="kpi-label">사용자 만족도</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 3: Market Entry -->
+                <div class="phase phase-3 left">
+                    <div class="phase-header">
+                        <div class="phase-info">
+                            <div class="phase-title">Phase 3: Market Entry</div>
+                            <div class="phase-duration">2026년 Q3-Q4 (6개월)</div>
+                        </div>
+                        <div class="phase-status status-development">개발 예정</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="objectives">
+                            <div class="objectives-title">핵심 목표</div>
+                            <ul class="objectives-list">
+                                <li class="objective-item">
+                                    <div class="objective-icon">🌟</div>
+                                    <div class="objective-text">정식 서비스 출시 및 대중 공개</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🏢</div>
+                                    <div class="objective-text">주요 핀테크 5-7곳과 파트너십 확대</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">💰</div>
+                                    <div class="objective-text">첫 수익 창출 및 비즈니스 모델 검증</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🎯</div>
+                                    <div class="objective-text">100만 사용자 확보 목표</div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="deliverables">
+                            <div class="deliverables-title">주요 산출물</div>
+                            <div class="deliverables-grid">
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">완전한 상용 서비스</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">마케팅 캠페인</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">고객 지원 센터</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">수익 분석 시스템</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpis">
+                            <div class="kpis-title">성과 지표 (KPI)</div>
+                            <div class="kpis-grid">
+                                <div class="kpi-item">
+                                    <div class="kpi-value">1M</div>
+                                    <div class="kpi-label">총 사용자</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">120억원</div>
+                                    <div class="kpi-label">연매출</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">7개</div>
+                                    <div class="kpi-label">파트너사</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 4: Scale & Optimize -->
+                <div class="phase phase-4 right">
+                    <div class="phase-header">
+                        <div class="phase-info">
+                            <div class="phase-title">Phase 4: Scale & Optimize</div>
+                            <div class="phase-duration">2027년-2028년 (24개월)</div>
+                        </div>
+                        <div class="phase-status status-scaling">확장 예정</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="objectives">
+                            <div class="objectives-title">핵심 목표</div>
+                            <ul class="objectives-list">
+                                <li class="objective-item">
+                                    <div class="objective-icon">⚡</div>
+                                    <div class="objective-text">시스템 성능 최적화 (10,000+ TPS)</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🌏</div>
+                                    <div class="objective-text">국내 시장 점유율 30% 목표</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🔬</div>
+                                    <div class="objective-text">AI/IoT 기반 차세대 서비스 출시</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">💎</div>
+                                    <div class="objective-text">수익성 확보 및 재투자 확대</div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="deliverables">
+                            <div class="deliverables-title">주요 산출물</div>
+                            <div class="deliverables-grid">
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">고성능 플랫폼 v2.0</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">AI 결제 에이전트</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">B2B 솔루션 포트폴리오</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">글로벌 진출 계획</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpis">
+                            <div class="kpis-title">성과 지표 (KPI)</div>
+                            <div class="kpis-grid">
+                                <div class="kpi-item">
+                                    <div class="kpi-value">15M</div>
+                                    <div class="kpi-label">총 사용자</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">850억원</div>
+                                    <div class="kpi-label">연매출</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">30%</div>
+                                    <div class="kpi-label">시장 점유율</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 5: Global Expansion -->
+                <div class="phase phase-5 left">
+                    <div class="phase-header">
+                        <div class="phase-info">
+                            <div class="phase-title">Phase 5: Global Expansion</div>
+                            <div class="phase-duration">2029년+ (지속)</div>
+                        </div>
+                        <div class="phase-status status-expansion">글로벌 진출</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="objectives">
+                            <div class="objectives-title">핵심 목표</div>
+                            <ul class="objectives-list">
+                                <li class="objective-item">
+                                    <div class="objective-icon">🌍</div>
+                                    <div class="objective-text">아시아 3개국 이상 진출</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🏆</div>
+                                    <div class="objective-text">글로벌 스테이블코인 플랫폼 리더</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">🔮</div>
+                                    <div class="objective-text">Web3 생태계 핵심 인프라 구축</div>
+                                </li>
+                                <li class="objective-item">
+                                    <div class="objective-icon">💫</div>
+                                    <div class="objective-text">차세대 결제 표준 제안</div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="deliverables">
+                            <div class="deliverables-title">주요 산출물</div>
+                            <div class="deliverables-grid">
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">글로벌 플랫폼</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">다국가 규제 대응</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">웹3 생태계</div>
+                                </div>
+                                <div class="deliverable-item">
+                                    <div class="deliverable-name">오픈소스 표준</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpis">
+                            <div class="kpis-title">성과 지표 (KPI)</div>
+                            <div class="kpis-grid">
+                                <div class="kpi-item">
+                                    <div class="kpi-value">50M+</div>
+                                    <div class="kpi-label">글로벌 사용자</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">1,200억원</div>
+                                    <div class="kpi-label">연매출</div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-value">5개국</div>
+                                    <div class="kpi-label">진출 국가</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="success-metrics">
+                <div class="metrics-title">🏆 5년 후 달성 목표</div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">👥</div>
+                        <div class="metric-value">50M+</div>
+                        <div class="metric-label">총 누적 사용자</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💰</div>
+                        <div class="metric-value">1,200억원</div>
+                        <div class="metric-label">연간 매출</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📈</div>
+                        <div class="metric-value">2,847%</div>
+                        <div class="metric-label">누적 ROI</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🌏</div>
+                        <div class="metric-value">5개국</div>
+                        <div class="metric-label">글로벌 진출</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="critical-path">
+                <div class="critical-title">⚠️ 핵심 리스크 요소</div>
+                <div class="critical-items">
+                    <div class="critical-item">
+                        <div class="critical-item-title">규제 승인 지연</div>
+                        <div class="critical-description">
+                            스테이블코인 법안 통과 지연이나 VASP/PG 라이선스 취득 과정에서의 
+                            예상보다 긴 심사 기간이 전체 일정에 미치는 영향
+                        </div>
+                    </div>
+                    <div class="critical-item">
+                        <div class="critical-item-title">파트너십 확보</div>
+                        <div class="critical-description">
+                            주요 핀테크/PG사와의 전략적 파트너십 체결이 
+                            예상보다 어려울 경우 시장 진입 전략 재검토 필요
+                        </div>
+                    </div>
+                    <div class="critical-item">
+                        <div class="critical-item-title">기술 성능 목표</div>
+                        <div class="critical-description">
+                            VISA/Mastercard 수준의 고성능 처리량 달성이 
+                            기술적으로 예상보다 복잡할 경우 단계별 성능 개선 전략 필요
+                        </div>
+                    </div>
+                    <div class="critical-item">
+                        <div class="critical-item-title">시장 경쟁 심화</div>
+                        <div class="critical-description">
+                            글로벌 대형 기업(Coinbase, PayPal)의 한국 시장 진입이나 
+                            국내 경쟁사의 빠른 추격에 대한 대응 전략
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

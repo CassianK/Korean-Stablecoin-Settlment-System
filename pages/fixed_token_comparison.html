@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토큰 표준 비교 매트릭스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .matrix-container {
+            padding: 40px;
+            overflow-x: auto;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white;
+            table-layout: fixed;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+        
+        .table-header th {
+            padding: 25px 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            word-wrap: break-word;
+        }
+        
+        .table-header th:first-child {
+            width: 22%;
+        }
+        
+        .table-header th:not(:first-child) {
+            width: 19.5%;
+        }
+        
+        .table-header th:last-child {
+            border-right: none;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7) !important;
+            color: white !important;
+            font-weight: 600 !important;
+            padding: 20px !important;
+            text-align: center !important;
+            font-size: 1.1rem !important;
+        }
+        
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        tbody tr:hover {
+            background: rgba(116, 185, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .feature-row td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+        
+        .feature-name {
+            font-weight: 600 !important;
+            color: #2d3436 !important;
+            text-align: left !important;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+            border-right: 3px solid #74b9ff !important;
+        }
+        
+        .feature-value {
+            text-align: center !important;
+            font-size: 0.95rem;
+        }
+        
+        .status-excellent { 
+            background: linear-gradient(135deg, #d4edda, #c3e6cb) !important;
+            color: #155724 !important;
+            font-weight: 600;
+        }
+        
+        .status-good { 
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb) !important;
+            color: #0c5460 !important;
+            font-weight: 600;
+        }
+        
+        .status-limited { 
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7) !important;
+            color: #856404 !important;
+            font-weight: 600;
+        }
+        
+        .status-poor { 
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb) !important;
+            color: #721c24 !important;
+            font-weight: 600;
+        }
+        
+        .compliance-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 2px 0;
+        }
+        
+        .badge-high { background: #d4edda; color: #155724; }
+        .badge-medium { background: #fff3cd; color: #856404; }
+        .badge-low { background: #f8d7da; color: #721c24; }
+        .badge-future { background: #d1ecf1; color: #0c5460; }
+        
+        .korean-regulation {
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 4px;
+        }
+        
+        .final-scores {
+            border-top: 4px solid #74b9ff !important;
+        }
+        
+        .final-scores td {
+            padding: 25px 15px !important;
+            font-size: 1.1rem !important;
+            font-weight: 700 !important;
+        }
+        
+        .score-column {
+            text-align: center !important;
+            font-size: 1.2rem !important;
+            font-weight: 800 !important;
+        }
+        
+        .erc20-col { 
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important; 
+            color: #1565c0 !important; 
+        }
+        .erc3643-col { 
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important; 
+            color: #7b1fa2 !important; 
+        }
+        .erc7702-col { 
+            background: linear-gradient(135deg, #ffebee, #ffcdd2) !important; 
+            color: #c62828 !important; 
+        }
+        .x402-col { 
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2) !important; 
+            color: #ef6c00 !important; 
+        }
+        
+        .stars {
+            font-size: 1.4rem;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .legend {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border-left: 5px solid #74b9ff;
+        }
+        
+        .legend h3 {
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 1200px) {
+            .matrix-container {
+                padding: 30px 20px;
+            }
+            
+            .table-header th,
+            .feature-row td {
+                padding: 15px 10px;
+                font-size: 0.9rem;
+            }
+            
+            .compliance-badge {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .matrix-container {
+                padding: 20px 10px;
+            }
+            
+            .table-header th,
+            .feature-row td {
+                padding: 12px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .korean-regulation {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>토큰 표준 종합 비교 분석</h1>
+            <p>한국 시장 적용성 및 규제 준수 관점에서의 심층 분석</p>
+        </div>
+        
+        <div class="matrix-container">
+            <table class="comparison-table">
+                <thead class="table-header">
+                    <tr>
+                        <th>평가 항목</th>
+                        <th>ERC-20<br><small>(2017)</small></th>
+                        <th>ERC-3643<br><small>(2020)</small></th>
+                        <th>ERC-7702<br><small>(2025)</small></th>
+                        <th>x402<br><small>(2025)</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="category-header" colspan="5">🛡️ 규제 준수 능력</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">KYC/CDD 준수</td>
+                        <td class="feature-value status-poor">불가능<br><div class="korean-regulation">익명성으로 인한 한계</div></td>
+                        <td class="feature-value status-excellent">완전 지원<br><span class="compliance-badge badge-high">온체인 신원확인</span></td>
+                        <td class="feature-value status-good">부분 지원<br><div class="korean-regulation">계정 단위 제어</div></td>
+                        <td class="feature-value status-limited">제한적<br><div class="korean-regulation">Facilitator 의존</div></td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">AML/CFT 대응</td>
+                        <td class="feature-value status-poor">수동 모니터링만 가능</td>
+                        <td class="feature-value status-excellent">자동화된 컴플라이언스</td>
+                        <td class="feature-value status-good">강화된 FDS</td>
+                        <td class="feature-value status-limited">중앙화된 통제</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">Travel Rule (트래블룰)</td>
+                        <td class="feature-value status-poor">프로토콜 레벨 미지원</td>
+                        <td class="feature-value status-excellent">스마트컨트랙트 내장</td>
+                        <td class="feature-value status-good">계정 레벨 추적</td>
+                        <td class="feature-value status-limited">VASP 간 정보 전달</td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="category-header" colspan="5">🇰🇷 한국 특화 요구사항</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">실명인증 연동</td>
+                        <td class="feature-value status-poor">불가능</td>
+                        <td class="feature-value status-limited">커스터마이징 필요</td>
+                        <td class="feature-value status-good">API 연동 가능</td>
+                        <td class="feature-value status-limited">오프체인 처리</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">외국환거래법 준수</td>
+                        <td class="feature-value status-poor">수동 보고</td>
+                        <td class="feature-value status-good">자동 국가별 제한</td>
+                        <td class="feature-value status-limited">계정 단위 제한</td>
+                        <td class="feature-value status-limited">Facilitator 책임</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">세무 처리 (부가세 등)</td>
+                        <td class="feature-value status-poor">별도 시스템 필요</td>
+                        <td class="feature-value status-limited">기본 지원</td>
+                        <td class="feature-value status-limited">별도 구현</td>
+                        <td class="feature-value status-good">통합 처리 가능</td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="category-header" colspan="5">👥 사용자 경험 (UX)</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">진입 장벽</td>
+                        <td class="feature-value status-good">낮음<br><div class="korean-regulation">지갑만 있으면 됨</div></td>
+                        <td class="feature-value status-poor">높음<br><div class="korean-regulation">자격증명 필요</div></td>
+                        <td class="feature-value status-limited">중간<br><div class="korean-regulation">계정 설정 필요</div></td>
+                        <td class="feature-value status-excellent">매우 낮음<br><div class="korean-regulation">기존 앱과 동일</div></td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">거래 속도</td>
+                        <td class="feature-value status-limited">블록체인 속도</td>
+                        <td class="feature-value status-poor">검증 오버헤드</td>
+                        <td class="feature-value status-good">배치 처리 가능</td>
+                        <td class="feature-value status-excellent">즉시 처리</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">복구 가능성</td>
+                        <td class="feature-value status-poor">개인키 분실 시 불가</td>
+                        <td class="feature-value status-limited">발급자 통해 가능</td>
+                        <td class="feature-value status-excellent">소셜 리커버리</td>
+                        <td class="feature-value status-good">Facilitator 통해 가능</td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="category-header" colspan="5">⚙️ 기술적 특성</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">구현 복잡도</td>
+                        <td class="feature-value status-excellent">매우 간단</td>
+                        <td class="feature-value status-poor">복잡<br><div class="korean-regulation">신원 인프라 필요</div></td>
+                        <td class="feature-value status-limited">중간<br><div class="korean-regulation">계정 추상화</div></td>
+                        <td class="feature-value status-limited">중간<br><div class="korean-regulation">프로토콜 구현</div></td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">상호운용성</td>
+                        <td class="feature-value status-excellent">완벽한 호환성</td>
+                        <td class="feature-value status-limited">허가된 주체만</td>
+                        <td class="feature-value status-good">ERC-20과 호환</td>
+                        <td class="feature-value status-limited">웹 표준 기반</td>
+                    </tr>
+                    <tr class="feature-row">
+                        <td class="feature-name">확장성</td>
+                        <td class="feature-value status-good">L2 솔루션 활용</td>
+                        <td class="feature-value status-limited">검증 병목</td>
+                        <td class="feature-value status-excellent">가스 효율성</td>
+                        <td class="feature-value status-excellent">오프체인 처리</td>
+                    </tr>
+                    
+                    <tr class="final-scores">
+                        <td class="feature-name">📊 한국 시장 적합성 종합 점수</td>
+                        <td class="feature-value score-column erc20-col">2/10<span class="stars">⭐⭐☆☆☆</span></td>
+                        <td class="feature-value score-column erc3643-col">7/10<span class="stars">⭐⭐⭐⭐☆</span></td>
+                        <td class="feature-value score-column erc7702-col">8/10<span class="stars">⭐⭐⭐⭐⭐</span></td>
+                        <td class="feature-value score-column x402-col">6/10<span class="stars">⭐⭐⭐☆☆</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="legend">
+                <h3>📝 평가 기준 범례</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color status-excellent"></div>
+                        <span>우수: 완전 지원/높은 성능</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color status-good"></div>
+                        <span>양호: 대부분 지원/적정 성능</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color status-limited"></div>
+                        <span>제한적: 부분 지원/추가 작업 필요</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color status-poor"></div>
+                        <span>부족: 미지원/낮은 성능</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

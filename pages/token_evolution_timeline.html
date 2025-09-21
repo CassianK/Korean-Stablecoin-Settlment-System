@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토큰 표준 진화 타임라인</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .timeline-container {
+            padding: 60px 40px;
+            position: relative;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #9b59b6, #e74c3c, #f39c12);
+            border-radius: 2px;
+            z-index: 1;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+        
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            width: 280px;
+        }
+        
+        .timeline-node {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .timeline-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+        }
+        
+        .erc20 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .erc3643 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .erc7702 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .x402 { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        
+        .timeline-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .erc20-content:hover { border-color: #3498db; }
+        .erc3643-content:hover { border-color: #9b59b6; }
+        .erc7702-content:hover { border-color: #e74c3c; }
+        .x402-content:hover { border-color: #f39c12; }
+        
+        .timeline-year {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .timeline-features {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+        
+        .timeline-features li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95rem;
+            color: #555;
+        }
+        
+        .timeline-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .compliance-level {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .low { background: #ffebee; color: #c62828; }
+        .medium { background: #fff3e0; color: #ef6c00; }
+        .high { background: #e8f5e8; color: #2e7d32; }
+        .future { background: #e3f2fd; color: #1565c0; }
+        
+        .korean-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .stars {
+            margin-left: 8px;
+            color: #f39c12;
+        }
+        
+        @media (max-width: 1200px) {
+            .timeline {
+                flex-wrap: wrap;
+                gap: 40px;
+            }
+            
+            .timeline-line {
+                display: none;
+            }
+            
+            .timeline-item {
+                width: 45%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-item {
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .timeline-container {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>토큰 표준 진화 타임라인</h1>
+            <p>규제 준수를 향한 기술 표준의 여정</p>
+        </div>
+        
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-node erc20">ERC-20</div>
+                    <div class="timeline-content erc20-content">
+                        <div class="timeline-year">2017</div>
+                        <div class="timeline-title">기본 토큰 표준</div>
+                        <div class="compliance-level low">규제 준수: 낮음</div>
+                        <ul class="timeline-features">
+                            <li>단순한 전송 기능</li>
+                            <li>완전한 상호운용성</li>
+                            <li>익명성 보장</li>
+                            <li>개방형 생태계</li>
+                        </ul>
+                        <div class="korean-score">
+                            한국 적합성 <span class="stars">★☆☆☆☆</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-node erc3643">ERC-3643</div>
+                    <div class="timeline-content erc3643-content">
+                        <div class="timeline-year">2020</div>
+                        <div class="timeline-title">T-REX 허가형 토큰</div>
+                        <div class="compliance-level high">규제 준수: 높음</div>
+                        <ul class="timeline-features">
+                            <li>온체인 KYC/CDD</li>
+                            <li>자격증명 기반 검증</li>
+                            <li>DTCC 채택</li>
+                            <li>투자자 제한 가능</li>
+                        </ul>
+                        <div class="korean-score">
+                            한국 적합성 <span class="stars">★★★☆☆</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-node erc7702">ERC-7702</div>
+                    <div class="timeline-content erc7702-content">
+                        <div class="timeline-year">2025</div>
+                        <div class="timeline-title">계정 추상화</div>
+                        <div class="compliance-level high">규제 준수: 높음</div>
+                        <ul class="timeline-features">
+                            <li>강화된 보안 정책</li>
+                            <li>계정 복구 기능</li>
+                            <li>다중 서명 지원</li>
+                            <li>사용자 보호</li>
+                        </ul>
+                        <div class="korean-score">
+                            한국 적합성 <span class="stars">★★★★☆</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-node x402">x402</div>
+                    <div class="timeline-content x402-content">
+                        <div class="timeline-year">2025</div>
+                        <div class="timeline-title">미래 결제 표준</div>
+                        <div class="compliance-level future">규제 준수: 미래형</div>
+                        <ul class="timeline-features">
+                            <li>초소액 결제 ($0.001)</li>
+                            <li>M2M 거래 지원</li>
+                            <li>실시간 정산</li>
+                            <li>Facilitator 모델</li>
+                        </ul>
+                        <div class="korean-score">
+                            한국 적합성 <span class="stars">★★☆☆☆</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

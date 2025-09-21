@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국형 스테이블코인 결제 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .architecture-container {
+            padding: 60px;
+        }
+        
+        .flow-diagram {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            border: 2px solid #dee2e6;
+            padding: 80px 60px 60px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+            justify-items: center;
+        }
+        
+        .actor {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 3px solid;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 240px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .actor:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        
+        /* 그리드 기반 정확한 배치 */
+        .user {
+            grid-column: 1;
+            grid-row: 1;
+            border-color: #74b9ff;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+        
+        .facilitator {
+            grid-column: 2;
+            grid-row: 1;
+            border-color: #a29bfe;
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            width: 280px;
+        }
+        
+        .vasp {
+            grid-column: 3;
+            grid-row: 1;
+            border-color: #fd79a8;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+        }
+        
+        .merchant {
+            grid-column: 1;
+            grid-row: 2;
+            border-color: #fdcb6e;
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        }
+        
+        .blockchain {
+            grid-column: 3;
+            grid-row: 2;
+            border-color: #55a3ff;
+            background: linear-gradient(135deg, #e8f4f8, #d1ecf1);
+        }
+        
+        .actor-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+        
+        .actor-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #2d3436;
+        }
+        
+        .actor-subtitle {
+            font-size: 0.9rem;
+            color: #636e72;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .license-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* 화살표 SVG 오버레이 */
+        .arrow-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .arrow {
+            stroke: #2d3436;
+            stroke-width: 2.5;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        
+        .arrow-animated {
+            stroke-dasharray: 8,4;
+            animation: dash 2s linear infinite;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -12;
+            }
+        }
+        
+        .step-label {
+            position: absolute;
+            background: #2d3436;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 20;
+            white-space: nowrap;
+        }
+        
+        /* 화살표와 완벽히 매칭되는 라벨 위치 */
+        .step-1 { top: 30px; left: 50%; transform: translateX(-50%); }
+        .step-2 { top: 30px; left: 50%; transform: translateX(-50%); }  
+        .step-3 { top: 30px; left: 50%; transform: translateX(-50%); }
+        .step-4 { top: 50%; right: -80px; transform: translateY(-50%); }
+        .step-5 { bottom: 50%; right: -80px; transform: translateY(50%); }
+        .step-6 { bottom: 30px; left: 50%; transform: translateX(-50%); }
+        
+        .process-steps {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        
+        .step-card.step-charge { border-color: #74b9ff; }
+        .step-card.step-auth { border-color: #a29bfe; }
+        .step-card.step-verify { border-color: #fd79a8; }
+        .step-card.step-settle { border-color: #fdcb6e; }
+        .step-card.step-blockchain { border-color: #55a3ff; }
+        .step-card.step-complete { border-color: #00b894; }
+        
+        .step-number {
+            display: inline-block;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 45px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3436;
+        }
+        
+        .step-description {
+            color: #636e72;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        
+        .tech-details {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 18px;
+            border-radius: 12px;
+            border-left: 4px solid #74b9ff;
+        }
+        
+        .tech-details-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+        
+        .tech-details-content {
+            font-size: 0.95rem;
+            color: #636e72;
+        }
+        
+        .regulatory-note {
+            margin-top: 50px;
+            padding: 35px;
+            background: linear-gradient(135deg, #fff7e6, #ffeaa7);
+            border-radius: 15px;
+            border-left: 5px solid #fdcb6e;
+        }
+        
+        .regulatory-note h3 {
+            color: #2d3436;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+        }
+        
+        .regulatory-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 18px;
+            list-style: none;
+        }
+        
+        .regulatory-list li {
+            padding: 18px;
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid #e17055;
+            color: #2d3436;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 1200px) {
+            .flow-diagram {
+                height: 800px;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr 1fr;
+                gap: 60px;
+                padding: 60px 40px;
+            }
+            
+            .user { grid-column: 1; grid-row: 1; }
+            .facilitator { grid-column: 2; grid-row: 1; width: 240px; }
+            .vasp { grid-column: 1; grid-row: 2; }
+            .merchant { grid-column: 2; grid-row: 2; }
+            .blockchain { grid-column: 1/3; grid-row: 3; justify-self: center; }
+            
+            /* 모바일용 라벨 위치 조정 */
+            .label-1 { top: 120px; left: 50%; }
+            .label-2 { top: 80px; right: 20px; }
+            .label-3 { top: 200px; left: 20px; }
+            .label-4 { top: 320px; left: 20px; }
+            .label-5 { bottom: 200px; left: 50%; }
+            .label-6 { bottom: 120px; right: 20px; }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .architecture-container {
+                padding: 40px 30px;
+            }
+            
+            .flow-diagram {
+                height: 1000px;
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(5, 1fr);
+                gap: 40px;
+                padding: 40px 20px;
+            }
+            
+            .user { grid-row: 1; }
+            .facilitator { grid-row: 2; width: 240px; }
+            .vasp { grid-row: 3; }
+            .blockchain { grid-row: 4; }
+            .merchant { grid-row: 5; }
+            
+            .actor {
+                width: 200px;
+                height: 160px;
+                padding: 20px;
+            }
+            
+            .actor-icon {
+                font-size: 2rem;
+            }
+            
+            .actor-title {
+                font-size: 1.1rem;
+            }
+            
+            .actor-subtitle {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>한국형 스테이블코인 결제 시스템</h1>
+            <p>Facilitator-VASP 분리 모델을 통한 규제 준수 아키텍처</p>
+        </div>
+        
+        <div class="architecture-container">
+            <div class="flow-diagram">
+                <!-- 화살표 SVG 오버레이 -->
+                <svg class="arrow-overlay">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                                refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2d3436" />
+                        </marker>
+                    </defs>
+                    
+                    <!-- 정리된 단일 화살표들 -->
+                    <!-- 1. 사용자 → 퍼실리테이터 (선불 충전) -->
+                    <path d="M 300 180 L 420 180" class="arrow arrow-animated" />
+                    
+                    <!-- 2. 퍼실리테이터 내부 처리 (결제 승인) -->
+                    <path d="M 560 160 Q 580 140 600 160" class="arrow arrow-animated" />
+                    
+                    <!-- 3. 퍼실리테이터 → VASP (정산 요청) -->
+                    <path d="M 700 180 L 820 180" class="arrow arrow-animated" />
+                    
+                    <!-- 4. VASP 내부 처리 (KYC/AML) -->
+                    <path d="M 960 230 Q 990 260 960 290" class="arrow arrow-animated" />
+                    
+                    <!-- 5. VASP → 블록체인 (온체인 정산) - 단일 화살표 -->
+                    <path d="M 960 330 L 960 410" class="arrow arrow-animated" />
+                    
+                    <!-- 6. 블록체인 → 가맹점 (완료 확인) -->
+                    <path d="M 820 480 L 300 480" class="arrow arrow-animated" />
+                </svg>
+                
+                <!-- 각 화살표에 해당하는 독립적인 라벨들 -->
+                <div class="step-label label-1">1. 선불 충전</div>
+                <div class="step-label label-2">2. 결제 승인</div>
+                <div class="step-label label-3">3. 정산 요청</div>
+                <div class="step-label label-4">4. KYC/AML</div>
+                <div class="step-label label-5">5. 온체인 정산</div>
+                <div class="step-label label-6">6. 완료 확인</div>
+                
+                <!-- 액터들 - 그리드 기반 완벽한 배치 -->
+                <div class="actor user">
+                    <div class="actor-icon">👤</div>
+                    <div class="actor-title">사용자</div>
+                    <div class="actor-subtitle">
+                        선불 충전<br>
+                        결제 요청<br>
+                        (PIN/생체인증)
+                    </div>
+                </div>
+                
+                <div class="actor facilitator">
+                    <div class="actor-icon">💳</div>
+                    <div class="actor-title">퍼실리테이터</div>
+                    <div class="actor-subtitle">
+                        네이버페이/카카오페이/토스<br>
+                        결제 승인 처리
+                    </div>
+                    <div class="license-badge">전자금융업자</div>
+                </div>
+                
+                <div class="actor vasp">
+                    <div class="actor-icon">🏦</div>
+                    <div class="actor-title">VASP</div>
+                    <div class="actor-subtitle">
+                        DSRV Custody<br>
+                        스테이블코인 보관<br>
+                        KYC/AML 처리
+                    </div>
+                    <div class="license-badge">특금법</div>
+                </div>
+                
+                <div class="actor merchant">
+                    <div class="actor-icon">🏪</div>
+                    <div class="actor-title">가맹점</div>
+                    <div class="actor-subtitle">
+                        상품/서비스 제공<br>
+                        결제 수령
+                    </div>
+                </div>
+                
+                <div class="actor blockchain">
+                    <div class="actor-icon">⛓️</div>
+                    <div class="actor-title">블록체인</div>
+                    <div class="actor-subtitle">
+                        온체인 정산<br>
+                        최종 가치 이전<br>
+                        투명성 보장
+                    </div>
+                </div>
+            </div>
+            
+            <div class="process-steps">
+                <div class="step-card step-charge">
+                    <div class="step-number">1</div>
+                    <div class="step-title">선불 충전 (Pre-funding)</div>
+                    <div class="step-description">
+                        사용자가 기존 간편결제 앱과 동일한 방식으로 스테이블코인을 퍼실리테이터에게 예치하여 포인트를 충전합니다.
+                    </div>
+                    <div class="tech-details">
+                        <div class="tech-details-title">기술적 구현</div>
+                        <div class="tech-details-content">
+                            KRW → USDC 변환, 퍼실리테이터 계정에 예치, 사용자 잔액 업데이트
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card step-auth">
+                    <div class="step-number">2</div>
+                    <div class="step-title">결제 승인 (Authorization)</div>
+                    <div class="step-description">
+                        사용자가 가맹점에서 결제 시도 시, 기존 PG사 시스템과 동일한 방식으로 PIN이나 생체인증을 거쳐 결제 승인을 처리합니다.
+                    </div>
+                    <div class="tech-details">
+                        <div class="tech-details-title">보안 검증</div>
+                        <div class="tech-details-content">
+                            다중 인증, 잔액 확인, 사기 탐지 시스템(FDS) 연동
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card step-verify">
+                    <div class="step-number">3</div>
+                    <div class="step-title">VASP 정산 요청 (/settle)</div>
+                    <div class="step-description">
+                        결제가 최종 확정되면 퍼실리테이터가 VASP에게 정산을 요청합니다. 이때 고빈도 API 호출이 발생합니다.
+                    </div>
+                    <div class="tech-details">
+                        <div class="tech-details-title">API 스펙</div>
+                        <div class="tech-details-content">
+                            RESTful API, 실시간 처리, VISA/Mastercard 수준의 처리량 지원
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card step-settle">
+                    <div class="step-number">4</div>
+                    <div class="step-title">KYC/AML/Travel Rule 검증</div>
+                    <div class="step-description">
+                        VASP가 수취인(가맹점)에 대한 KYC 확인 및 트래블룰 준수를 위한 정보 수집을 실시간으로 처리합니다.
+                    </div>
+                    <div class="tech-details">
+                        <div class="tech-details-title">규제 준수</div>
+                        <div class="tech-details-content">
+                            특금법 준수, 100만원 이상 거래 시 정보 전달, AML 모니터링
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card step-blockchain">
+                    <div class="step-number">5</div>
+                    <div class="step-title">온체인 트랜잭션 실행</div>
+                    <div class="step-description">
+                        VASP가 보관 지갑에서 가맹점 지갑으로 해당 금액의 스테이블코인을 블록체인 상에서 전송합니다.
+                    </div>
+                    <div class="tech-details">
+                        <div class="tech-details-title">블록체인 처리</div>
+                        <div class="tech-details-content">
+                            스마트컨트랙트 실행, 가스비 최적화, 트랜잭션 확인
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card step-complete">
+                    <div class="step-number">6</div>
+                    <div class="step-title">결제 완료 확인</div>
+                    <div class="step-description">
+                        온체인 트랜잭션이 확인되면 모든 참여자에게 결제 완료 알림이 전송되고 최종 정산이 완료됩니다.
+                    </div>
+                    <div class="tech-details">
+                        <div class="tech-details-title">완료 처리</div>
+                        <div class="tech-details-content">
+                            성공/실패 응답, 영수증 발행, 회계 처리, 정산 완료
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="regulatory-note">
+                <h3>🛡️ 핵심 규제 준수 요소</h3>
+                <ul class="regulatory-list">
+                    <li><strong>특정금융정보법:</strong> VASP 라이선스 기반 KYC/AML 완전 준수</li>
+                    <li><strong>전자금융거래법:</strong> 퍼실리테이터의 PG사 라이선스 필수</li>
+                    <li><strong>가상자산이용자보호법:</strong> 분리보관 및 소비자 보호</li>
+                    <li><strong>외국환거래법:</strong> 국경간 거래 시 신고 의무 자동화</li>
+                    <li><strong>실명인증:</strong> 주민등록번호 기반 본인확인 연동</li>
+                    <li><strong>고빈도 처리:</strong> VISA/Mastercard 수준의 TPS 지원</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
